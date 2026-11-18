@@ -7,6 +7,8 @@ const statusEl = document.querySelector(".status");
 const micBtn = document.getElementById("micBtn");
 const voiceStatus = document.getElementById("voiceStatus");
 const clearBtn = document.getElementById("clearBtn");
+const voiceToggle = document.getElementById("voiceToggle");
+let voiceEnabled = true;
 const history = [];
 
 function addMessage(role, text) {
@@ -35,6 +37,7 @@ function chooseFemaleVoice() {
 }
 
 function speak(text) {
+  if (!voiceEnabled) return;
   if (!("speechSynthesis" in window)) {
     voiceStatus.textContent = "Voice output unavailable";
     return;
@@ -98,6 +101,14 @@ input.addEventListener("keydown", (event) => {
     event.preventDefault();
     form.requestSubmit();
   }
+});
+
+voiceToggle.addEventListener("click", () => {
+  voiceEnabled = !voiceEnabled;
+  voiceToggle.textContent = voiceEnabled ? "Voice: on" : "Voice: off";
+  voiceToggle.setAttribute("aria-pressed", String(voiceEnabled));
+  if (!voiceEnabled && "speechSynthesis" in window) speechSynthesis.cancel();
+  voiceStatus.textContent = voiceEnabled ? "Voice output: on" : "Voice output: off";
 });
 
 clearBtn.addEventListener("click", () => {
